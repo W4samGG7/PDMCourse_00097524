@@ -1,5 +1,6 @@
 package com.example.pdm_00097524
 
+import LemonadeApp.LemonadeApp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,11 +24,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PDM_00097524Theme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    quadrant()
+                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    LemonadeApp(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
