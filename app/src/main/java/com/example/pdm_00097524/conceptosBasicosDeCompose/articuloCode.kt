@@ -1,4 +1,4 @@
-package conceptosBasicosDeCompose
+package com.example.pdm_00097524.conceptosBasicosDeCompose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column

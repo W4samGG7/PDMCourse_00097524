@@ -13,5 +13,5 @@
     <string name="quadrant_row_explanation">A layout composable that places its children in a horizontal sequence.</string>
     <string name="quadrant_column_title">Column composable</string>
     <string name="quadrant_column_explanation">A layout composable that places its children in a vertical sequence.</string>
-
+    <string name="roll">Roll</string>
 </resources>
