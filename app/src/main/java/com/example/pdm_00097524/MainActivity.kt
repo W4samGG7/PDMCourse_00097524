@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.example.pdm_00097524.DiceRoller.DiceRollerApp
 import com.example.pdm_00097524.ui.theme.PDM_00097524Theme
+import com.pdm0126.practica_preparcial1.TipCalculator.TipCalculator
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PDM_00097524Theme {
                     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                        DiceRollerApp(modifier = Modifier.padding(innerPadding))
+                        TipCalculator(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
