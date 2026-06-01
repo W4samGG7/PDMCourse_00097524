@@ -41,8 +41,8 @@ import com.example.pdm_00097524.JSONPlaceholder.components.PostCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PostListScreen (
-    viewModel: PostListViewModel = viewModel()
+fun PostListScreen (NavigateToDetail:(Int) -> Unit,
+                    viewModel: PostListViewModel = viewModel()
 ){
     val posts by viewModel.posts.collectAsState()
     val loading by viewModel.loading.collectAsState()
@@ -139,7 +139,7 @@ fun PostListScreen (
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(posts){ post ->
-                PostCard(post)
+                PostCard(post = post, onClick = { NavigateToDetail(post.id)})
             }
         }
 

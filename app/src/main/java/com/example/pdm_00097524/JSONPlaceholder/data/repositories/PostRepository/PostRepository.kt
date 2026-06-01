@@ -10,4 +10,9 @@ interface PostRepository{
         body: String,
         userId: Int
     ): Result<Post>
+
+    suspend fun getPostById(
+        id: Int
+    ) : Result<Post>
+
 }

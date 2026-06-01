@@ -43,4 +43,17 @@ class PostApiRepository : PostRepository {
             return Result.failure(e)
         }
     }
+
+
+    override suspend fun getPostById(id: Int): Result<Post> {
+        try {
+            val response: PostDTO = KtorClient.client.get("posts/$id") {
+            }.body()
+
+            return Result.success(response.toModel())
+
+        }catch (e: Exception){
+            return Result.failure(e)
+        }
+    }
 }
