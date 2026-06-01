@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.example.pdm_00097524.DiceRoller.DiceRollerApp
+import com.example.pdm_00097524.JSONPlaceholder.navigation.PostApp
 import com.example.pdm_00097524.ui.theme.PDM_00097524Theme
 import com.pdm0126.practica_preparcial1.TipCalculator.TipCalculator
 
@@ -19,9 +20,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PDM_00097524Theme {
-                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                        TipCalculator(modifier = Modifier.padding(innerPadding))
-                }
+                PostApp()
             }
         }
     }
