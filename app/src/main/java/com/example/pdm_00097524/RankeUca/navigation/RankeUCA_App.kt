@@ -4,18 +4,24 @@ import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.example.pdm_00097524.RankeUca.screens.home.HomeScreen
 import com.example.pdm_00097524.RankeUca.screens.options.OptionsScreen
 import com.example.pdm_00097524.RankeUca.screens.questions.QuestionScreen
-
+import com.example.pdm_00097524.RankeUca.screens.votes.VoteScreen
 
 
 @Composable
 fun RankeUCA_App() {
-  val backStack = rememberNavBackStack(Routes.Questions)
+  val backStack = rememberNavBackStack(Routes.Home)
   NavDisplay(
     backStack = backStack,
     onBack = { backStack.removeLastOrNull() },
     entryProvider = entryProvider {
+      entry<Routes.Home> {
+        HomeScreen(
+          NavtoQuestions = {backStack.add(Routes.Questions)},
+          NavtoVotes = {backStack.add(Routes.Votes)})
+      }
       entry<Routes.Options> { key->
         OptionsScreen(key.questionId)
       }
@@ -23,6 +29,9 @@ fun RankeUCA_App() {
         QuestionScreen(navigateToDetail = { questionId ->
           backStack.add(Routes.Options(questionId))
         })
+      }
+      entry<Routes.Votes> {
+        VoteScreen()
       }
     },
   )
