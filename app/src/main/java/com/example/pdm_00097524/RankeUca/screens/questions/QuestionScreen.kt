@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pdm_00097524.RankeUca.components.QuestionBottomSheet
 import com.example.pdm_00097524.RankeUca.components.QuestionCard
+import com.example.pdm_00097524.RankeUca.model.Question
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +47,7 @@ fun QuestionScreen(
 ){
     val questions by viewModel.questions.collectAsStateWithLifecycle()
     var showSheet by rememberSaveable { mutableStateOf(false) }
+    var editQuestion by rememberSaveable {mutableStateOf<Question?>(null) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
@@ -53,7 +55,9 @@ fun QuestionScreen(
             TopAppBar(
                 title = { Text("Preguntas") },
                 actions = {
-                    TextButton(onClick = {showSheet = true}) {
+                    TextButton(onClick = {
+                        editQuestion = null
+                        showSheet = true}) {
                         Icon(imageVector = Icons.Default.Add, contentDescription = "Nueva pregunta")
                         Spacer(modifier = Modifier.width(4.dp))
                         Text("Nuevo")
@@ -101,7 +105,12 @@ fun QuestionScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     items(items = questions, key = {it.id}){ question ->
-                        QuestionCard(question, onDelete = {viewModel.deleteQuestion(question)}, onClick = {navigateToDetail(question.id)})
+                        QuestionCard(question, onDelete = {viewModel.deleteQuestion(question)},
+                            onClick = {navigateToDetail(question.id)},
+                            onEdit = {
+                            editQuestion = question
+                            showSheet=true}
+                        )
                     }
                 }
             }
@@ -109,10 +118,18 @@ fun QuestionScreen(
     }
     if(showSheet){
         QuestionBottomSheet(
+            question = editQuestion,
             onSave = {title ->
-                viewModel.addQuestion(title)
-            },
-            onDismiss = {showSheet = false}
+                if(editQuestion!=null){
+                    viewModel.updateQuestion(editQuestion!!.copy(title=title))
+                }
+                else {
+                    viewModel.addQuestion(title)
+                }
+                     },
+            onDismiss = {
+                showSheet = false
+                editQuestion=null}
         )
     }
 }

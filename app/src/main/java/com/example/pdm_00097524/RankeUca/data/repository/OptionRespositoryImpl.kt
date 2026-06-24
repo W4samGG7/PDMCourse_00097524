@@ -25,4 +25,7 @@ class OptionRespositoryImpl (
         optionDao.deleteOption(option.toEntity())
     }
 
+    override suspend fun updateOption(option: Option) {
+        optionDao.updateOption(option.toEntity())
+    }
 }

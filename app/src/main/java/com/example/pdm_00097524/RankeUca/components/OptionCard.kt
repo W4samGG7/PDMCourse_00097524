@@ -9,8 +9,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,29 +28,43 @@ import coil3.compose.AsyncImage
 import com.example.pdm_00097524.RankeUca.model.Option
 
 @Composable
-fun OptionCard(option: Option, onClick:() -> Unit){
-    Card(
-        modifier = Modifier.fillMaxWidth().height(100.dp).clickable{onClick()},
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        shape = RoundedCornerShape(4.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            AsyncImage(
-                modifier = Modifier.size(90.dp),
-                model = option.imageUrl,
-                contentDescription = "Imagen de option"
-            )
-            Column(
-                verticalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                Text(text = option.value,
-                    fontWeight = FontWeight.Bold)
-                Text(text = "Toca para votar"
+fun OptionCard(option: Option, onDelete:() -> Unit ,onEdit:() -> Unit){
+    ElevatedCard (
+        modifier = Modifier
+            .fillMaxWidth()
+    ){
+        ListItem(
+            headlineContent = {
+                Text(
+                    text = option.value,
+                    style = MaterialTheme.typography.titleMedium
                 )
+            },
+            supportingContent = {
+                Text(
+                    text = option.imageUrl ?: "",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            },
+            trailingContent = {
+                Row() {
+                    IconButton(onClick = { onEdit() }) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Editar ${option.value}",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
+                    IconButton(onClick = { onDelete() }) {
+                        Icon(
+                            imageVector = Icons.Default.DeleteOutline,
+                            contentDescription = "Borrar ${option.value}",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
             }
-        }
+        )
     }
 }

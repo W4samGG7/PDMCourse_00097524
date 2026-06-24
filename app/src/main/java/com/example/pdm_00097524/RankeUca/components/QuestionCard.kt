@@ -1,9 +1,11 @@
 package com.example.pdm_00097524.RankeUca.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,7 +20,8 @@ import com.example.pdm_00097524.RankeUca.model.Question
 fun QuestionCard(
     question: Question,
     onDelete: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onEdit:() -> Unit
 ) {
     ElevatedCard(
         modifier = Modifier
@@ -40,12 +43,21 @@ fun QuestionCard(
                 )
             },
             trailingContent = {
-                IconButton(onClick = { onDelete() }) {
-                    Icon(
-                        imageVector = Icons.Default.DeleteOutline,
-                        contentDescription = "Borrar ${question.title}",
-                        tint = MaterialTheme.colorScheme.error
-                    )
+                Row() {
+                    IconButton(onClick = { onEdit() }) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Editar ${question.title}",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
+                    IconButton(onClick = { onDelete() }) {
+                        Icon(
+                            imageVector = Icons.Default.DeleteOutline,
+                            contentDescription = "Borrar ${question.title}",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
                 }
             }
         )

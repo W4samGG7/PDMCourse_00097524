@@ -36,6 +36,8 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import com.example.pdm_00097524.RankeUca.components.OptionBottomSheet
+import com.example.pdm_00097524.RankeUca.components.OptionCard
+import com.example.pdm_00097524.RankeUca.model.Option
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,6 +51,7 @@ fun OptionsScreen(
 ){
     val options by viewModel.options.collectAsStateWithLifecycle()
     var showSheet by rememberSaveable { mutableStateOf(false) }
+    var editOption by rememberSaveable {mutableStateOf<Option?>(null) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
@@ -56,7 +59,9 @@ fun OptionsScreen(
             TopAppBar(
                 title = { Text("Administrar opciones") },
                 actions = {
-                    TextButton(onClick = {showSheet = true}) {
+                    TextButton(onClick = {
+                        editOption = null
+                        showSheet = true}) {
                         Icon(imageVector = Icons.Default.Add, contentDescription = "Nueva opcion")
                         Spacer(modifier = Modifier.width(4.dp))
                         Text("Nuevo")
@@ -104,32 +109,12 @@ fun OptionsScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     items(items = options, key = {it.id}){ option ->
-                        ElevatedCard {
-                            ListItem(
-                                headlineContent = {
-                                    Text(
-                                        text = option.value,
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                },
-                                supportingContent = {
-                                    Text(
-                                        text = option.imageUrl ?: "",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                },
-                                trailingContent = {
-                                    IconButton(onClick = {viewModel.deleteOption(option)}) {
-                                        Icon(
-                                            imageVector = Icons.Default.DeleteOutline,
-                                            contentDescription = "Borrar ${option.value}",
-                                            tint = MaterialTheme.colorScheme.error
-                                        )
-                                    }
-                                }
-                            )
-                        }
+                        OptionCard(option,
+                            onDelete = {viewModel.deleteOption(option)},
+                            onEdit = {
+                                editOption = option
+                                showSheet = true
+                            })
                     }
                 }
             }
@@ -137,10 +122,19 @@ fun OptionsScreen(
     }
     if(showSheet){
         OptionBottomSheet(
+            option = editOption,
             onSave = {value, imageUrl ->
-                viewModel.addOption(value ,imageUrl)
+                if(editOption != null){
+                    viewModel.updateOption(editOption!!.copy(value = value, imageUrl = imageUrl))
+                }
+                else {
+                    viewModel.addOption(value, imageUrl)
+                }
             },
-            onDismiss = {showSheet = false}
+            onDismiss = {
+                showSheet = false
+                editOption = null
+            }
         )
     }
 }
