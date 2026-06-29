@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.example.pdm_00097524.RankeUca.screens.home.HomeScreen
-import com.example.pdm_00097524.RankeUca.screens.options.OptionsScreen
-import com.example.pdm_00097524.RankeUca.screens.questions.QuestionScreen
-import com.example.pdm_00097524.RankeUca.screens.votes.VoteScreen
+import com.example.pdm_00097524.RankeUca.ui.screens.home.HomeScreen
+import com.example.pdm_00097524.RankeUca.ui.screens.options.OptionsScreen
+import com.example.pdm_00097524.RankeUca.ui.screens.questions.QuestionScreen
+import com.example.pdm_00097524.RankeUca.ui.screens.votes.VoteScreen
 
 
 @Composable
