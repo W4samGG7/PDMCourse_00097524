@@ -26,14 +26,14 @@ import io.ktor.http.contentType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class QuestionOfflineFirstRepositoryImpl (
+class QuestionOfflineFirstRepositoryImpl(
     private val questionDao: QuestionDao,
     private val optionDao: OptionDao
 ) : QuestionOfflineFirstRepository {
 
     // Leer: de Room (fuente de verdad)
     override fun getQuestions(): Flow<List<Question>> {
-        return questionDao.getQuestionsWithOptions().map { list->
+        return questionDao.getQuestionsWithOptions().map { list ->
             list.map { it.toModel() }
         }
     }
@@ -51,53 +51,55 @@ class QuestionOfflineFirstRepositoryImpl (
             val questions: List<QuestionDTO> = KtorClient.client.get("questions").body()
             val options: List<OptionDTO> = KtorClient.client.get("options").body()
 
-            questionDao.upsertQuestions(questions.map { optionDTO-> optionDTO.toEntity() })
+            questionDao.upsertQuestions(questions.map { optionDTO -> optionDTO.toEntity() })
             optionDao.upsertOptions(options.map { optionDTO -> optionDTO.toEntity() })
 
             return Result.success(Unit)
-        } catch (e: Exception){
+        } catch (e: Exception) {
             return Result.failure(e)
         }
     }
 
     override suspend fun refreshQuestionOptions(questionId: Int): Result<Unit> {
         try {
-            val response: List<OptionDTO> = KtorClient.client.get("questions/$questionId/options").body()
+            val response: List<OptionDTO> =
+                KtorClient.client.get("questions/$questionId/options").body()
 
             optionDao.upsertOptions(response.map { optionDTO -> optionDTO.toEntity() })
 
             return Result.success(Unit)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             return Result.failure(e)
         }
     }
 
     // Mutar: API -> luego refresh()
-    override suspend fun createQuestion(title: String): Result<Question> {
+    override suspend fun createQuestion(title: String): Result<Unit> {
         try {
-            val response: QuestionDTO = KtorClient.client.post("questions"){
+            val response: QuestionDTO = KtorClient.client.post("questions") {
                 contentType(ContentType.Application.Json)
                 setBody(mapOf("title" to title))
             }.body()
 
             questionDao.upsertQuestion(response.toEntity())
 
-            return Result.success(response.toModel())
-        }catch (e: Exception){
+            return Result.success(Unit)
+        } catch (e: Exception) {
             return Result.failure(e)
         }
     }
 
     override suspend fun updateQuestion(id: Int, title: String): Result<Unit> {
         try {
-            KtorClient.client.put("questions/$id") {
+            val response: QuestionDTO = KtorClient.client.put("questions/$id") {
                 contentType(ContentType.Application.Json)
                 setBody(mapOf("title" to title))
-            }
+            }.body()
 
-            questionDao.updateQuestion(id = id,title = title)
+            questionDao.upsertQuestion(response.toEntity())
+
             return Result.success(Unit)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             return Result.failure(e)
         }
     }
@@ -109,15 +111,19 @@ class QuestionOfflineFirstRepositoryImpl (
             questionDao.deleteQuestionById(id)
 
             return Result.success(Unit)
-        } catch (e: Exception){
+        } catch (e: Exception) {
             return Result.failure(e)
         }
     }
 
-    override suspend fun createOption(questionId: Int, value: String, imageUrl: String?): Result<Option>{
+    override suspend fun createOption(
+        questionId: Int,
+        value: String,
+        imageUrl: String?
+    ): Result<Unit> {
         try {
 
-            val response: OptionDTO = KtorClient.client.post("options"){
+            val response: OptionDTO = KtorClient.client.post("options") {
                 contentType(ContentType.Application.Json)
                 setBody(
                     CreateOption(
@@ -125,13 +131,14 @@ class QuestionOfflineFirstRepositoryImpl (
                         questionId = questionId,
                         imageUrl = imageUrl
                     )
-                )}.body()
+                )
+            }.body()
 
             optionDao.upsertOption(response.toEntity())
 
-            return Result.success(response.toModel())
+            return Result.success(Unit)
 
-        }catch (e: Exception){
+        } catch (e: Exception) {
             return Result.failure(e)
         }
     }
@@ -148,39 +155,35 @@ class QuestionOfflineFirstRepositoryImpl (
             if (imageUrl != null) body["imageUrl"] = imageUrl
             if (questionId != null) body["questionId"] = questionId
 
-            if (body.isNotEmpty()){
-                KtorClient.client.put("options/$id") {
-                    contentType(ContentType.Application.Json)
-                    setBody(body)
-                }
-
-                optionDao.updateOption(
-                    id = id,
-                    title = value,
-                    imageUrl = imageUrl,
-                    questionId = questionId
-                )
+            if (body.isEmpty()) {
+                return Result.success(Unit)
             }
 
+            val response: OptionDTO = KtorClient.client.put("options/$id") {
+                contentType(ContentType.Application.Json)
+                setBody(body)
+            }.body()
+
+            optionDao.upsertOption(response.toEntity())
+
             return Result.success(Unit)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             return Result.failure(e)
         }
     }
 
     override suspend fun deleteOption(id: Int): Result<Unit> {
-        try {
-
+        return try {
             KtorClient.client.delete("options/$id")
 
             optionDao.deleteOptionnById(id)
 
-            return Result.success(Unit)
+            Result.success(Unit)
 
-        }catch (e: Exception){
+        } catch (e: Exception) {
             return Result.failure(e)
         }
+
+
     }
-
-
 }
