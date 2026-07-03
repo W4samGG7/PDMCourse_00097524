@@ -29,6 +29,7 @@ class AuthRepositoryImpl (
 
         if(response.ok && response.apiKey != null){
             session.save(apikey = response.apiKey, name = name, carnet = carnet)
+            KtorClient.authApiKey = response.apiKey
             true
         }else{
             false
@@ -41,5 +42,6 @@ class AuthRepositoryImpl (
 
     override suspend fun logout() {
         session.clear()
+        KtorClient.authApiKey = null
     }
 }
