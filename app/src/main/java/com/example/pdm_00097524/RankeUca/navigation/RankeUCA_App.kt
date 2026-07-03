@@ -11,7 +11,10 @@ import com.example.pdm_00097524.RankeUca.ui.screens.votes.VoteScreen
 
 
 @Composable
-fun RankeUCA_App() {
+fun RankeUCA_App(
+  userName: String?,
+  onLogout: () -> Unit
+) {
   val backStack = rememberNavBackStack(Routes.Home)
   NavDisplay(
     backStack = backStack,
@@ -20,7 +23,10 @@ fun RankeUCA_App() {
       entry<Routes.Home> {
         HomeScreen(
           NavtoQuestions = {backStack.add(Routes.Questions)},
-          NavtoVotes = {backStack.add(Routes.Votes)})
+          NavtoVotes = {backStack.add(Routes.Votes)},
+          onLogout = onLogout,
+          userName = userName
+        )
       }
       entry<Routes.Options> { key->
         OptionsScreen(key.questionId)

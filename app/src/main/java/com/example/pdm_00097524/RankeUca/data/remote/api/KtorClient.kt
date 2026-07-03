@@ -18,7 +18,7 @@ object KtorClient {
 
     private const val BASE_URL = "https://qjcxdvfzyseuvezacxsd.supabase.co/functions/v1/rankeuca/"
 
-    private const val API_KEY = BuildConfig.API_TOKEN
+    var authApiKey: String? = null
 
     val client = HttpClient(OkHttp) {
         expectSuccess = true
@@ -44,7 +44,7 @@ object KtorClient {
         // Configuración aplicada a todas las peticiones
         defaultRequest {
             url(BASE_URL)
-            header(HttpHeaders.Authorization ,"Bearer $API_KEY")
+            authApiKey?.let {  header(HttpHeaders.Authorization ,"Bearer $it") }
             header(HttpHeaders.Accept, "application/json")
         }
     }
